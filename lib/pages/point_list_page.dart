@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter_ad/main.dart';
 import 'package:flutter_ad/model/contents.dart';
 
 class PointListPage extends StatefulWidget {
@@ -20,6 +21,11 @@ class _PointListPageState extends State<PointListPage> {
     Contents(title: 'お得です', imagePath: 'assets/logo.png', point: 3),
     Contents(title: 'お得です', imagePath: 'assets/logo.png', point: 3),
     Contents(title: 'お得です', imagePath: 'assets/logo.png', point: 3),
+    Contents(title: 'お得です', imagePath: 'assets/logo.png', point: 3),
+    Contents(title: 'お得です', imagePath: 'assets/logo.png', point: 3),
+    Contents(title: 'お得です', imagePath: 'assets/logo.png', point: 3),
+    Contents(title: 'お得です', imagePath: 'assets/logo.png', point: 3),
+    Contents(title: 'お得です', imagePath: 'assets/logo.png', point: 3),
   ];
   @override
   Widget build(BuildContext context) {
@@ -28,7 +34,11 @@ class _PointListPageState extends State<PointListPage> {
         backgroundColor: Theme.of(context).colorScheme.inversePrimary,
         title: Text('ポイ活アプリ'),
         actions: [
-          Text('0')
+          Container(
+            alignment: Alignment.center,
+            margin: EdgeInsets.only(right: 20),
+            child: Text('$totalPoint', style: TextStyle(fontSize: 20),),
+          )
         ],
       ),
       body:SingleChildScrollView(child: buildList()),
@@ -42,30 +52,37 @@ class _PointListPageState extends State<PointListPage> {
     for(int i =0; i < contentsList.length; i++){
       rowChildren.add(
         Expanded(
-            child: Card(
-              child: Column(
-                children: [
-                  Image.asset(contentsList[i].imagePath),
-                  Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceAround,
-                      children: [
-                        Text(contentsList[i].title),
-                        Container(
-                          alignment: Alignment.center,
-                          width: 20,
-                          height: 20,
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.amber
-                          ),
-                          child: Text('${contentsList[i].point}'),
-                        )
-                      ],
-                    ),
-                  )
-                ],
+            child: InkWell(
+              onTap: (){
+                setState(() {
+                  totalPoint = totalPoint + contentsList[i].point;
+                });
+              },
+              child: Card(
+                child: Column(
+                  children: [
+                    Image.asset(contentsList[i].imagePath),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: [
+                          Text(contentsList[i].title),
+                          Container(
+                            alignment: Alignment.center,
+                            width: 20,
+                            height: 20,
+                            decoration: BoxDecoration(
+                              shape: BoxShape.circle,
+                              color: Colors.amber
+                            ),
+                            child: Text('${contentsList[i].point}'),
+                          )
+                        ],
+                      ),
+                    )
+                  ],
+                ),
               ),
             )
         )
@@ -78,6 +95,15 @@ class _PointListPageState extends State<PointListPage> {
         rowChildren.add(Expanded(child: Container()));
         columnChildren.add(Row(children: rowChildren,));
         rowChildren = [];
+      }
+      if(i % 4 == 3){
+        columnChildren.add(
+          Container(
+            width: 200,
+            height: 100,
+            color: Colors.red,
+          )
+        );
       }
     }
     return Column(
