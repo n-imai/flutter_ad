@@ -41,7 +41,20 @@ class _PointListPageState extends State<PointListPage> {
           )
         ],
       ),
-      body:SingleChildScrollView(child: buildList()),
+      body:SingleChildScrollView(child: Column(
+        children: [
+          isMultiply ? Container(
+            width: 300,
+            height: 50,
+            color: Colors.amber,
+            child: Text('ポイント倍増中', style: TextStyle(fontSize: 20, color: Colors.white), ),
+            alignment: Alignment.center,
+          ) : Container(
+
+          ),
+          buildList(),
+        ],
+      )),
     );
   }
 
@@ -55,7 +68,11 @@ class _PointListPageState extends State<PointListPage> {
             child: InkWell(
               onTap: (){
                 setState(() {
-                  totalPoint = totalPoint + contentsList[i].point;
+                  if(isMultiply == true) {
+                    totalPoint = totalPoint + contentsList[i].point * 2;
+                  } else {
+                    totalPoint = totalPoint + contentsList[i].point;
+                  }
                 });
               },
               child: Card(

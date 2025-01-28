@@ -6,6 +6,7 @@ void main() {
 }
 
 int totalPoint = 0;
+bool isMultiply = false;
 
 class MyApp extends StatelessWidget {
   const MyApp({super.key});

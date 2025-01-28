@@ -33,7 +33,9 @@ class _WatchVideoPageState extends State<WatchVideoPage> {
               height: 50,
               child: ElevatedButton(
                   onPressed: (){
-
+                    setState(() {
+                      totalPoint = totalPoint +5;
+                    });
                   },
                   child: Text('動画を視聴', style: TextStyle(fontSize: 20),)
               ),
@@ -46,7 +48,9 @@ class _WatchVideoPageState extends State<WatchVideoPage> {
               height: 50,
               child: ElevatedButton(
                   onPressed: (){
-
+                    setState(() {
+                      isMultiply = true;
+                    });
                   },
                   child: Text('動画を視聴', style: TextStyle(fontSize: 20),)
               ),
