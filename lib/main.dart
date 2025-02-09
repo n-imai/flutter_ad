@@ -1,7 +1,14 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_ad/pages/top_page.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
+import 'package:flutter_ad/model/admob.dart';
 
 void main() {
+  WidgetsFlutterBinding.ensureInitialized();
+  MobileAds.instance.updateRequestConfiguration(
+    RequestConfiguration(testDeviceIds: Admob.testDevices),
+  );
+  MobileAds.instance.initialize();
   runApp(const MyApp());
 }
 

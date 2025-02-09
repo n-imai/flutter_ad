@@ -1,6 +1,10 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_ad/main.dart';
+import 'package:flutter_ad/model/admob.dart';
 import 'package:flutter_ad/model/contents.dart';
+import 'package:google_mobile_ads/google_mobile_ads.dart';
 
 class PointListPage extends StatefulWidget {
   const PointListPage({super.key});
@@ -10,6 +14,10 @@ class PointListPage extends StatefulWidget {
 }
 
 class _PointListPageState extends State<PointListPage> {
+  List<BannerAd> bannerAds = [];
+  late InterstitialAd interstitialAd;
+  int tapCount = 0;
+  bool isLoaded = false;
   List<Contents> contentsList = [
     Contents(title: 'ポイント獲得', imagePath: 'assets/logo.png', point: 1),
     Contents(title: 'ポイントゲット', imagePath: 'assets/logo.png', point: 2),
@@ -27,6 +35,45 @@ class _PointListPageState extends State<PointListPage> {
     Contents(title: 'お得です', imagePath: 'assets/logo.png', point: 3),
     Contents(title: 'お得です', imagePath: 'assets/logo.png', point: 3),
   ];
+
+  void initAd(){
+    for(int i = 0; i < contentsList.length ~/ 4; i++){
+      BannerAd bannerAd = BannerAd(
+          size: AdSize.banner,
+          adUnitId: Platform.isAndroid ? Admob.getAdId(deviceType: 'android', adType: 'banner') : Admob.getAdId(deviceType: 'ios', adType: 'banner'),
+          request: AdRequest(),
+          listener: BannerAdListener(
+            onAdLoaded: (Ad ad){
+              setState(() {
+                isLoaded = true;
+              });
+            }
+          ),
+      )..load();
+      bannerAds.add(bannerAd);
+    }
+    InterstitialAd.load(
+        adUnitId: Platform.isAndroid ? Admob.getAdId(deviceType: 'android', adType: 'interstitial') : Admob.getAdId(deviceType: 'ios', adType: 'interstitial'),
+        request: AdRequest(),
+        adLoadCallback: InterstitialAdLoadCallback(
+          onAdLoaded: (InterstitialAd ad) {
+            interstitialAd = ad;
+          },
+          onAdFailedToLoad: (LoadAdError error) {
+            print('インタースティシャル広告の読み込みに失敗: $error');
+          },
+        ),
+    );
+  }
+
+
+
+  @override
+  void initState() {
+    super.initState();
+    initAd();
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -47,8 +94,8 @@ class _PointListPageState extends State<PointListPage> {
             width: 300,
             height: 50,
             color: Colors.amber,
-            child: Text('ポイント倍増中', style: TextStyle(fontSize: 20, color: Colors.white), ),
             alignment: Alignment.center,
+            child: Text('ポイント倍増中', style: TextStyle(fontSize: 20, color: Colors.white), ),
           ) : Container(
 
           ),
@@ -66,7 +113,7 @@ class _PointListPageState extends State<PointListPage> {
       rowChildren.add(
         Expanded(
             child: InkWell(
-              onTap: (){
+              onTap: () async{
                 setState(() {
                   if(isMultiply == true) {
                     totalPoint = totalPoint + contentsList[i].point * 2;
@@ -74,6 +121,24 @@ class _PointListPageState extends State<PointListPage> {
                     totalPoint = totalPoint + contentsList[i].point;
                   }
                 });
+                if (tapCount < 2){
+                  tapCount = tapCount + 1;
+                } else {
+                  await interstitialAd.show();
+                  InterstitialAd.load(
+                    adUnitId: Platform.isAndroid ? Admob.getAdId(deviceType: 'android', adType: 'interstitial') : Admob.getAdId(deviceType: 'ios', adType: 'interstitial'),
+                    request: AdRequest(),
+                    adLoadCallback: InterstitialAdLoadCallback(
+                      onAdLoaded: (InterstitialAd ad) {
+                        interstitialAd = ad;
+                      },
+                      onAdFailedToLoad: (LoadAdError error) {
+                        print('インタースティシャル広告の読み込みに失敗: $error');
+                      },
+                    ),
+                  );
+                  tapCount = 0;
+                }
               },
               child: Card(
                 child: Column(
@@ -116,9 +181,9 @@ class _PointListPageState extends State<PointListPage> {
       if(i % 4 == 3){
         columnChildren.add(
           Container(
-            width: 200,
-            height: 100,
-            color: Colors.red,
+            width: bannerAds[i ~/ 4].size.width.toDouble(),
+            height: bannerAds[i ~/ 4].size.height.toDouble(),
+            child: isLoaded ? AdWidget(ad: bannerAds[i ~/ 4],) : Container(),
           )
         );
       }
