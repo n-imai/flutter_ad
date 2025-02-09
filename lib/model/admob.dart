@@ -1,7 +1,7 @@
 import 'admob_secret.dart';
 
 class Admob {
-  static bool isTest = false;
+  static bool isTest = true;
   static List<String> get testDevices => AdmobSecret.testDevices;
   
   static String getAdId({required String deviceType, required String adType}) {
