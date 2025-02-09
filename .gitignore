@@ -199,9 +199,3 @@ app.*.symbols
 
 # Secret files
 lib/model/admob_secret.dart
-android/app/src/main/AndroidManifest.xml
-android/app/src/main/res/values/strings.xml
-
-# Keep templates
-!android/app/src/main/AndroidManifest.xml.template
-!android/app/src/main/res/values/strings.xml.template
