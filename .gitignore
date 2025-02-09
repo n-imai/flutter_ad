@@ -196,3 +196,12 @@ app.*.symbols
 .python-version
 .gclient_previous_custom_vars
 .gclient_previous_sync_commits
+
+# Secret files
+lib/model/admob_secret.dart
+android/app/src/main/AndroidManifest.xml
+android/app/src/main/res/values/strings.xml
+
+# Keep templates
+!android/app/src/main/AndroidManifest.xml.template
+!android/app/src/main/res/values/strings.xml.template
